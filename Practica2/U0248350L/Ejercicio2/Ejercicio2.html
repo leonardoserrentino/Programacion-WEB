@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Ejercicio 2</title>
+</head>
+
+<body>
+    <form id="formCompra">
+        <input type="text" id="producto" placeholder="Articulo" required>
+        <button type="submit">Anadir</button>
+    </form>
+    <ul id="ulCompra"></ul>
+
+    <script>
+        const formCompra = document.getElementById("formCompra");
+        const ulCompra = document.getElementById("ulCompra");
+        let ListaCompras = [];
+
+        formCompra.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            productoInput = document.getElementById("producto");
+
+            //El metodo trim() borra todos los espacios antes y despues de los chars != " "
+            productoInputValue = productoInput.value.trim();
+
+            if (productoInputValue != "") {
+                //Si no es vacio, anadir el producto a la lista con push()
+                ListaCompras.push(productoInputValue);
+
+                //Uso la funcion innerHTML para borrar el contenido de <ul>
+                ulCompra.innerHTML = "";
+
+                //Por cada elemento en la lista, creo un elemento <li> con el nombre del producto
+                ListaCompras.forEach((producto) => {
+                    //Creo el elemento <li>
+                    listItem = document.createElement("li");
+
+                    //Pongo como contenido el nombre del producto iterado
+                    listItem.textContent = producto;
+
+                    //Anadir el elemento a el contenido de <ul>
+                    ulCompra.appendChild(listItem);
+                });
+            }else{
+                //Si el contenido del valor de productoInput luego de el trim() es vacio
+                alert("El campo Producto no puede ser vacio!");
+            }
+
+            //Borrar el contenido de el input text para reset y esperar un nuevo producto
+            productoInput.value = "";
+        });
+    </script>
+</body>
+
+</html>

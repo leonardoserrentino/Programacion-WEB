@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        .center{
+            position:absolute;
+            width: 600px;
+            height: 200px;
+            top:50%;
+            left:50%;
+            margin: -100px 0 0 -300px;
+        }
+    </style>
+    <title>Ejercicio 1</title>
+</head>
+
+<body>
+    <div id="cronometro" class="center">
+        <img id="minutosDecenas" src="digits/0.png">
+        <img id="minutosUnidades" src="digits/0.png">
+        <img id="dosPuntos" src="digits/dot.png">
+        <img id="segundosDecenas" src="digits/0.png">
+        <img id="segundosUnidades" src="digits/0.png">
+        <img id="dosPuntos" src="digits/dot.png">
+        <img id="milisegundosDecenas" src="digits/0.png">
+        <img id="milisegundosUnidades" src="digits/0.png">
+    </div>
+    <button id="start">Start</button>
+    <button id="reset">Reset</button>
+
+    <script>
+        //Esta variable global es para poner el valor que el metodo setInterval returna, asi puedo borrar quando tengo que hacer Reset
+        let intervaloId;
+
+        //Esta variable global tiene el estado del cronometro
+        let corriendo = false;
+
+        //Variables para minutos, segundos y milisegundos
+        let minutos = 0;
+        let segundos = 0;
+        let milisegundos = 0;
+
+        //Cada 10 milisegundos (setInterval con 10) incrementa milisegundos, actualizando MM, ss y mm segundo el formato buscado
+        //Asi se puede simular un cronometro
+        function cronoUpdate() {
+            milisegundos++;
+            if (milisegundos == 100) {
+                milisegundos = 0;
+                segundos++;
+                if (segundos == 60) {
+                    segundos = 0;
+                    minutos++;
+                }
+            }
+
+            //Si no esta corriendo pongo todos a 0
+            if (!corriendo) {
+                minutos = 0;
+                segundos = 0;
+                milisegundos = 0;
+            }
+
+            // Actualizar las imagenes de los digitos
+            document.getElementById("minutosDecenas").src = `digits/${Math.floor(minutos / 10)}.png`;
+            document.getElementById("minutosUnidades").src = `digits/${minutos % 10}.png`;
+            document.getElementById("segundosDecenas").src = `digits/${Math.floor(segundos / 10)}.png`;
+            document.getElementById("segundosUnidades").src = `digits/${segundos % 10}.png`;
+            document.getElementById("milisegundosDecenas").src = `digits/${Math.floor(milisegundos / 10)}.png`;
+            document.getElementById("milisegundosUnidades").src = `digits/${milisegundos % 10 }.png`;
+        }
+
+        //
+        function startStop() {
+            corriendo = !corriendo;
+            if (corriendo) {
+                //Uso la funcion setInterval que me permite de llamar el metodo cronoUpdate cada 10 millisegundos (1000/100) para tener el formato buscado
+                intervaloId = setInterval(cronoUpdate, 10);
+
+                //Cuando esta corriendo el boton se pone en la posibilidad de Stop
+                document.getElementById("start").textContent = "Stop";
+            } else {
+                //Borro el contendido de la variable global inrevaloId
+                clearInterval(intervaloId);
+
+                //Cuando no esta corriendo el boton se pone en la posibilidad de Start
+                document.getElementById("start").textContent = "Start";
+            }
+        }
+
+        function reset() {
+            corriendo = false;
+
+            //Borro el contendido de la variable global inrevaloId
+            clearInterval(intervaloId);
+
+            //Cuando corriendo es "false" cronoUpdate pone MM, ss y mm a 0
+            cronoUpdate();
+
+            //No esta corriendo, entonces pongo el boton en la posibilidad de Start
+            document.getElementById("start").textContent = "Start";
+        }
+
+        document.getElementById("start").addEventListener("click", startStop);
+        document.getElementById("reset").addEventListener("click", reset);
+    </script>
+
+</body>
+
+</html>

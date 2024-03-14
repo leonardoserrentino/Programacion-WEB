@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Apuesta de Par o Non</title>
+</head>
+<body>
+  <h1>Apuesta de Par o Non</h1>
+
+  <p>Saldo: <span id="saldo">100€</span></p>
+
+  <form id="apuestaForm">
+    <label for="importe">Importe de Apuesta (€):</label>
+    <input type="number" id="importe" name="importe" required><br>
+
+    <label for="par">Par o Non?</label>
+    <input type="radio" name="parNon" value="par" required> Par
+    <input type="radio" name="parNon" value="non" required> Non<br>
+
+    <input type="button" value="Apostar" onclick="apuesta()">
+    <input type="button" value="Re-Empezar" onclick="empieza()">
+  </form>
+
+  <p id="resultado"></p>
+
+  <script>
+    var saldo = 100;
+
+    //He anadido una funcion para olvidar todo y re empezar sin recargar la pantalla
+    function empieza(){
+        saldo=100;
+        document.getElementById('saldo').textContent = `${saldo}€`;
+        document.getElementById('resultado').textContent = '';
+        document.getElementById('importe').value = '';
+        document.querySelector('input[name="parNon"]:checked').checked = false;   
+    }
+
+    function apuesta() {
+      const importe = parseFloat(document.getElementById('importe').value);
+      //Chaeck si importe es valido
+      if(isNaN(importe)){
+        alert("Selecciona un importe!");
+        return;
+      }
+      const parNon = document.querySelector('input[name="parNon"]:checked');
+      //Check si parNon es valido
+      if (!parNon) {
+        alert('Selecciona Par o Non.');
+        return;
+      }
+
+      const prediccion = parNon.value;
+      // Genera un nmero aleatorio entre 1 y 6
+      const dedos1 = Math.floor(Math.random()*6) + 1; 
+      const dedos2 = Math.floor(Math.random()*6) + 1;
+      const sumaDedos = dedos1 + dedos2;
+
+      let resultado = '';
+
+      if(prediccion === 'par' && sumaDedos % 2 === 0){
+        saldo += importe*3;
+        resultado = `Adivinaste! Ganaste ${importe*3}€.`;
+      }else if (prediccion === 'non' && sumaDedos % 2 !== 0){
+        saldo += importe*3;
+        resultado = `Adivinaste! Ganaste ${importe*3}€.`;
+      }else{
+        saldo -= importe;
+        resultado = `No adivinaste. Perdiste ${importe}€.`;
+      }
+
+      document.getElementById('saldo').textContent = `${saldo}€`;
+      document.getElementById('resultado').textContent = `Dedos: ${dedos1} + ${dedos2} = ${sumaDedos}. ${resultado}`;
+      document.getElementById('importe').value = '';
+      document.querySelector('input[name="parNon"]:checked').checked = false;
+    }
+  </script>
+</body>
+</html>
